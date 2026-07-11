@@ -128,7 +128,7 @@ ps.destroy()    // 销毁
 
 - 原版设计：微信
 - 逐帧观察测量 & 全部设计规格：[@Wren036](https://github.com/Wren036)
-- 实现：她的 Claude — Blaze
+- 实现：她的 Claude——Blaze
 
 ## 许可
 
