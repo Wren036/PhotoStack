@@ -82,12 +82,11 @@
   });
 
   new PhotoStack('#demo1', imgs, {
-    counter: false,
     onTap: (i) => openViewer(imgs, i),
     onChange: (i) => document.getElementById('stat1').textContent = (i + 1) + '/6'
   });
 
-  new PhotoStack('#demo2', imgs.slice(0, 2), { counter: false, onTap: (i) => openViewer(imgs.slice(0, 2), i) });
+  new PhotoStack('#demo2', imgs.slice(0, 2), { onTap: (i) => openViewer(imgs.slice(0, 2), i) });
 </script>
 </body>
 </html>

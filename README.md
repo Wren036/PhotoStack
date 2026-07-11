@@ -38,7 +38,7 @@ A WeChat-style stacked photo card for chat UIs. Stacking, edge-peeking, finger-s
 | `rotStep` | `2.2` | 每层递进旋转角 deg，随层深递增 |
 | `scaleStep` | `0.06` | 每层递进缩小 |
 | `flingVel` | `0.4` | 快甩速度阈值 px/ms |
-| `counter` | `true` | 右下角 n/N 角标 |
+| `counter` | `false` | 右下角 n/N 角标（原版无，可选开启） |
 | `onTap` | — | `(index) => {}` 点击当前卡回调 |
 | `onChange` | — | `(index) => {}` 翻页完成回调 |
 

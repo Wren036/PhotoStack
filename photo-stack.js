@@ -19,7 +19,7 @@
     rotStep: 2.2,      // 每层递进旋转角 rotation per depth (deg)，旋转角随层深递增
     scaleStep: 0.06,   // 每层递进缩小 scale-down per depth
     flingVel: 0.4,     // 快甩判定速度 fling velocity threshold (px/ms)
-    counter: true,     // 右下角 n/N 角标
+    counter: false,    // 右下角 n/N 角标（微信原版无此元素，故默认关闭）
     onTap: null,       // (index) => {} 点击当前卡
     onChange: null     // (index) => {} 翻页落账
   };
