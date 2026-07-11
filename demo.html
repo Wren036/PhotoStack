@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>PhotoStack Demo</title>
+<link rel="stylesheet" href="photo-stack.css">
+<style>
+  body {
+    margin: 0; padding: 32px 16px 60px;
+    font-family: -apple-system, system-ui, sans-serif;
+    background: #f5f2ee; color: #4a4440;
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+  }
+  h1 { font-size: 20px; margin: 0; }
+  p.sub { font-size: 13px; color: #9a908a; margin: 0 0 12px; text-align: center; line-height: 1.6; }
+  .demo-block { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 18px; }
+  .demo-label { font-size: 12px; color: #b0a69e; }
+  .hint { font-size: 12px; color: #b0a69e; margin-top: 26px; text-align: center; line-height: 1.8; }
+  .stat { font-size: 12px; color: #9a908a; }
+</style>
+</head>
+<body>
+  <h1>PhotoStack</h1>
+  <p class="sub">微信式合并照片卡 · 堆叠 / 探边 / 跟手翻页 / 快甩<br>WeChat-style stacked photo card</p>
+
+  <div class="demo-block">
+    <div class="demo-label">六张示例</div>
+    <div id="demo1"></div>
+    <div class="stat" id="stat1">1/6</div>
+  </div>
+
+  <div class="demo-block">
+    <div class="demo-label">两张（边界弹性预览：首张可右滑、末张可左滑，行程受限）</div>
+    <div id="demo2"></div>
+  </div>
+
+  <div class="hint">
+    拖动翻页：手指即动画进度条，任意时刻可逆<br>
+    快甩：速度超过阈值时，位移再小也翻页<br>
+    连甩：动画中断先结算页码，每次甩动翻且仅翻一页
+  </div>
+
+<script src="photo-stack.js"></script>
+<script>
+  // 纯色测试卡：canvas 生成，无外部依赖
+  function colorCard(color, label) {
+    const c = document.createElement('canvas');
+    c.width = 284; c.height = 380;
+    const g = c.getContext('2d');
+    g.fillStyle = color; g.fillRect(0, 0, 284, 380);
+    g.fillStyle = 'rgba(255,255,255,.85)';
+    g.font = 'bold 90px system-ui';
+    g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.fillText(label, 142, 190);
+    return c.toDataURL('image/png');
+  }
+  const palette = ['#f5b8c0', '#a8d8c8', '#a5d3ea', '#f2dd88', '#f0b070', '#c5a8dd'];
+  const imgs = palette.map((c, i) => colorCard(c, String(i + 1)));
+
+  // 迷你全屏预览（支持左右滑动切换）：演示 onTap 如何接宿主自己的图片查看器
+  const viewer = document.createElement('div');
+  viewer.style.cssText = 'display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.88);align-items:center;justify-content:center;cursor:zoom-out;touch-action:pan-x;';
+  const viewerImg = document.createElement('img');
+  viewerImg.style.cssText = 'max-width:92vw;max-height:84vh;border-radius:10px;transition:transform .18s;';
+  const viewerNum = document.createElement('div');
+  viewerNum.style.cssText = 'position:absolute;top:max(16px, env(safe-area-inset-top));left:50%;transform:translateX(-50%);color:#fff;font-size:13px;background:rgba(255,255,255,.14);padding:3px 12px;border-radius:12px;';
+  viewer.appendChild(viewerImg);
+  viewer.appendChild(viewerNum);
+  document.body.appendChild(viewer);
+  let vList = [], vIdx = 0, vSx = null;
+  function vShow() { viewerImg.src = vList[vIdx]; viewerNum.textContent = (vIdx + 1) + ' / ' + vList.length; }
+  function openViewer(list, i) { vList = list; vIdx = i; vShow(); viewer.style.display = 'flex'; }
+  viewer.addEventListener('pointerdown', e => { vSx = e.clientX; });
+  viewer.addEventListener('pointerup', e => {
+    if (vSx === null) return;
+    const dx = e.clientX - vSx; vSx = null;
+    if (Math.abs(dx) > 40) {
+      const ni = vIdx + (dx < 0 ? 1 : -1);
+      if (ni >= 0 && ni < vList.length) { vIdx = ni; vShow(); }
+    } else viewer.style.display = 'none';   // 轻点关闭
+  });
+
+  new PhotoStack('#demo1', imgs, {
+    counter: false,
+    onTap: (i) => openViewer(imgs, i),
+    onChange: (i) => document.getElementById('stat1').textContent = (i + 1) + '/6'
+  });
+
+  new PhotoStack('#demo2', imgs.slice(0, 2), { counter: false, onTap: (i) => openViewer(imgs.slice(0, 2), i) });
+</script>
+</body>
+</html>

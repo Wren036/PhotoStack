@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 300" font-family="system-ui, -apple-system, sans-serif">
+  <rect width="560" height="300" fill="#faf7f3"/>
+  <text x="280" y="26" text-anchor="middle" font-size="15" font-weight="600" fill="#4a4440">收起时的滚动编排 — 两段式 vs 一段式</text>
+
+  <!-- 左：两段式（错误） -->
+  <text x="150" y="54" text-anchor="middle" font-size="12.5" font-weight="600" fill="#c06a7a">✕ 两段式（体感割裂）</text>
+  <rect x="40" y="66" width="220" height="16" rx="8" fill="#f5b8c0"/>
+  <text x="150" y="78" font-size="10" fill="#fff" text-anchor="middle">① 卡片收拢 + 下方消息滑上来</text>
+  <rect x="150" y="92" width="110" height="16" rx="8" fill="#f0b070"/>
+  <text x="205" y="104" font-size="10" fill="#fff" text-anchor="middle">② 整页再沉降</text>
+  <text x="150" y="130" font-size="10.5" fill="#b0806a" text-anchor="middle">动画结束后视口又被拉动一次</text>
+  <text x="150" y="145" font-size="10.5" fill="#b0806a" text-anchor="middle">（先到位，再整体位移）</text>
+
+  <!-- 右：一段式（正确） -->
+  <text x="410" y="54" text-anchor="middle" font-size="12.5" font-weight="600" fill="#5a9a7a">✓ 一段式（同一时间轴）</text>
+  <rect x="300" y="66" width="220" height="16" rx="8" fill="#a8d8c8"/>
+  <text x="410" y="78" font-size="10" fill="#fff" text-anchor="middle">卡片收拢 + 消息跟随 + 滚动沉降</text>
+  <text x="410" y="104" font-size="10.5" fill="#5a8a70" text-anchor="middle">三者共享同一条进度曲线</text>
+  <text x="410" y="119" font-size="10.5" fill="#5a8a70" text-anchor="middle">视口随收拢动画同步牵引</text>
+
+  <!-- 分隔线 -->
+  <line x1="280" y1="48" x2="280" y2="150" stroke="#e0d6cd" stroke-width="1"/>
+
+  <!-- 底部：滚动护栏时序 -->
+  <line x1="40" y1="168" x2="520" y2="168" stroke="#e0d6cd" stroke-width="1"/>
+  <text x="280" y="188" text-anchor="middle" font-size="12.5" font-weight="600" fill="#4a4440">滚动护栏：贴底收起时防浏览器钳跳</text>
+
+  <g font-size="10.5">
+    <rect x="46" y="200" width="104" height="30" rx="6" fill="#a5d3ea"/>
+    <text x="98" y="214" fill="#fff" text-anchor="middle">① 底部垫入占位块</text>
+    <text x="98" y="226" fill="#fff" text-anchor="middle">scrollHeight 保持</text>
+
+    <rect x="166" y="200" width="104" height="30" rx="6" fill="#a8d8c8"/>
+    <text x="218" y="214" fill="#fff" text-anchor="middle">② 删行不再触发</text>
+    <text x="218" y="226" fill="#fff" text-anchor="middle">scrollTop 钳跳</text>
+
+    <rect x="286" y="200" width="104" height="30" rx="6" fill="#f2dd88"/>
+    <text x="338" y="214" fill="#8a7040" text-anchor="middle">③ 动画中滚动</text>
+    <text x="338" y="226" fill="#8a7040" text-anchor="middle">平滑沉降到新底</text>
+
+    <rect x="406" y="200" width="104" height="30" rx="6" fill="#c5a8dd"/>
+    <text x="458" y="214" fill="#fff" text-anchor="middle">④ 撤垫（位置已合法</text>
+    <text x="458" y="226" fill="#fff" text-anchor="middle">按实际占用结算）</text>
+  </g>
+  <path d="M 152 215 L 164 215" stroke="#9a908a" stroke-width="1.5"/>
+  <path d="M 272 215 L 284 215" stroke="#9a908a" stroke-width="1.5"/>
+  <path d="M 392 215 L 404 215" stroke="#9a908a" stroke-width="1.5"/>
+
+  <text x="280" y="262" text-anchor="middle" font-size="10.5" fill="#9a908a">占位块实际占用 = 自身高度 + 容器行间距（flex gap）——差 6px 也会在撤垫瞬间产生钳跳</text>
+  <text x="280" y="288" text-anchor="middle" font-size="11.5" fill="#9a908a">滚动补间必须自行 rAF 驱动：iOS PWA 对 scrollTo smooth 经常直接跳变</text>
+</svg>

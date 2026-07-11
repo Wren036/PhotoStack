@@ -1,0 +1,48 @@
+/*!
+ * PhotoStack — WeChat-style stacked photo card
+ * 尺寸由 JS options 控制（width/height），这里只管质感
+ */
+.pstack-stage {
+  position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  cursor: grab;
+}
+.pstack-stage:active { cursor: grabbing; }
+
+.pstack-card {
+  position: absolute;
+  inset: 0;
+  background: transparent;      /* 白底会在旋转卡边缘抗锯齿处渗出白色细线 */
+  border-radius: 14px;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, .14);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* 松手回弹/落账由这条过渡负责；拖拽中 JS 会临时设 transition:none 跟手 */
+  transition: transform .32s cubic-bezier(.2, .7, .3, 1), opacity .3s;
+}
+
+.pstack-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;            /* 卡片固定比例不随图变形（微信规则），图片裁切填满 */
+  pointer-events: none;
+  transform: scale(1.04);       /* 盖住旋转卡边缘抗锯齿缝隙 */
+}
+
+.pstack-badge {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  z-index: 120;
+  background: rgba(0, 0, 0, .45);
+  color: #fff;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  pointer-events: none;
+  font-family: -apple-system, system-ui, sans-serif;
+}

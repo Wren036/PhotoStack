@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 300" font-family="system-ui, -apple-system, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 L8 4 L0 8 z" fill="#b0806a"/>
+    </marker>
+  </defs>
+  <rect width="560" height="300" fill="#faf7f3"/>
+  <text x="280" y="28" text-anchor="middle" font-size="15" font-weight="600" fill="#4a4440">堆叠结构 — 恒定三层可见</text>
+
+  <!-- 隐藏层（虚线幽灵） -->
+  <g transform="translate(280,165)">
+    <g transform="translate(39,0) rotate(6.6)">
+      <rect x="-59" y="-79" width="118" height="158" rx="12" fill="none" stroke="#d8cfc7" stroke-width="1.5" stroke-dasharray="5 4" transform="scale(.82)"/>
+    </g>
+    <text x="255" y="-100" font-size="11" fill="#b0a69e" text-anchor="end">第 3+ 层：opacity 0（在编但隐身）</text>
+
+    <!-- 右探边 d=2? 不——右侧只画d=1、左d=1，符合常态 -->
+    <!-- 左探边 d=1 -->
+    <g transform="translate(-27,0) rotate(-2.2) scale(.94)">
+      <rect x="-59" y="-79" width="118" height="158" rx="12" fill="#a8d8c8" stroke="#8cc4b0" stroke-width="1"/>
+    </g>
+    <!-- 右探边 d=1 -->
+    <g transform="translate(27,0) rotate(2.2) scale(.94)">
+      <rect x="-59" y="-79" width="118" height="158" rx="12" fill="#f2dd88" stroke="#dcc463" stroke-width="1"/>
+    </g>
+    <!-- 顶卡 -->
+    <g>
+      <rect x="-59" y="-79" width="118" height="158" rx="12" fill="#a5d3ea" stroke="#7db8d8" stroke-width="1"/>
+      <text x="0" y="10" text-anchor="middle" font-size="30" font-weight="700" fill="#fff">cur</text>
+    </g>
+  </g>
+
+  <!-- 标注：peek -->
+  <path d="M 208 258 L 194 258" stroke="#b0806a" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="212" y="262" font-size="11" fill="#8a6a58">peek = 15px（探边露出）</text>
+
+  <!-- 标注：rot -->
+  <path d="M 356 140 q 14 6 12 22" stroke="#b0806a" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+  <text x="378" y="146" font-size="11" fill="#8a6a58">rotate ±2.2°/层</text>
+  <text x="378" y="161" font-size="11" fill="#8a6a58">旋转角随层深递增</text>
+
+  <!-- 标注：scale -->
+  <text x="60" y="98" font-size="11" fill="#8a6a58">scale −0.06/层</text>
+  <text x="60" y="113" font-size="11" fill="#8a6a58">探边卡缩小一号</text>
+  <text x="60" y="128" font-size="11" fill="#8a6a58">收在主图内</text>
+
+  <!-- 底注 -->
+  <text x="280" y="288" text-anchor="middle" font-size="11.5" fill="#9a908a">无论堆内多少张，可见层数恒为三；到达边界时探边配额转移至另一侧</text>
+</svg>
