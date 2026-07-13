@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 300" font-family="system-ui, -apple-system, sans-serif">
   <rect width="560" height="300" fill="#faf7f3"/>
-  <text x="280" y="28" text-anchor="middle" font-size="15" font-weight="600" fill="#4a4440">三张守恒 — 探边接力时刻表</text>
+  <text x="280" y="28" text-anchor="middle" font-size="15" font-weight="600" fill="#4a4440">三张守恒 — 舞台转盘时刻表</text>
 
   <!-- 进度轴 -->
   <line x1="90" y1="250" x2="500" y2="250" stroke="#c8beb6" stroke-width="1.5"/>
@@ -23,17 +23,18 @@
 
   <!-- 泳道3：旧对侧探边（退场） -->
   <text x="82" y="160" font-size="12" fill="#4a4440" text-anchor="end">旧探边</text>
-  <rect x="90" y="146" width="226" height="20" rx="10" fill="#f0b070"/>
-  <rect x="90" y="146" width="226" height="20" rx="10" fill="url(#fadeout)"/>
-  <text x="180" y="160" font-size="10.5" fill="#fff" text-anchor="middle">前 55% 渐隐退场</text>
-  <text x="330" y="160" font-size="10.5" fill="#c8beb6">此后 opacity 0</text>
+  <rect x="90" y="146" width="205" height="20" rx="10" fill="#f0b070"/>
+  <text x="192" y="160" font-size="10.5" fill="#fff" text-anchor="middle">前半程保持静止</text>
+  <rect x="295" y="146" width="205" height="20" rx="10" fill="#f0b070"/>
+  <rect x="295" y="146" width="205" height="20" rx="10" fill="url(#fadeout)"/>
+  <text x="397" y="160" font-size="10.5" fill="#fff" text-anchor="middle">向回落顶卡背后收拢（透明度、尺寸递减）</text>
 
   <!-- 泳道4：新探边（进场） -->
   <text x="82" y="200" font-size="12" fill="#4a4440" text-anchor="end">新探边</text>
-  <rect x="274" y="186" width="226" height="20" rx="10" fill="#c5a8dd"/>
-  <rect x="274" y="186" width="226" height="20" rx="10" fill="url(#fadein)"/>
-  <text x="404" y="200" font-size="10.5" fill="#fff" text-anchor="middle">后 55% 渐显进场</text>
-  <text x="178" y="200" font-size="10.5" fill="#c8beb6" text-anchor="middle">未进场，opacity 0</text>
+  <rect x="295" y="186" width="205" height="20" rx="10" fill="#c5a8dd"/>
+  <rect x="295" y="186" width="205" height="20" rx="10" fill="url(#fadein)"/>
+  <text x="397" y="200" font-size="10.5" fill="#fff" text-anchor="middle">自升顶卡背后滑出（透明度、尺寸递增）</text>
+  <text x="185" y="200" font-size="10.5" fill="#c8beb6" text-anchor="middle">未出场（位于升顶卡正后方）</text>
 
   <defs>
     <linearGradient id="fadeout" x1="0" x2="1">
@@ -47,8 +48,8 @@
   </defs>
 
   <!-- 交接重叠窗口 -->
-  <rect x="274" y="140" width="42" height="72" fill="none" stroke="#e08a9a" stroke-width="1.5" stroke-dasharray="4 3" rx="4"/>
-  <text x="295" y="232" font-size="10.5" fill="#c06a7a" text-anchor="middle">10% 交接重叠：无空窗、无四卡同框</text>
+  <rect x="290" y="140" width="10" height="72" fill="none" stroke="#e08a9a" stroke-width="1.5" stroke-dasharray="4 3" rx="4"/>
+  <text x="295" y="232" font-size="10.5" fill="#c06a7a" text-anchor="middle">p=0.5 顶卡越过峰值回落，进退场镜像同步启动</text>
 
-  <text x="280" y="290" text-anchor="middle" font-size="11.5" fill="#9a908a">任意时刻可见卡数恒为三 — 一进一出，接力交替</text>
+  <text x="280" y="290" text-anchor="middle" font-size="11.5" fill="#9a908a">进退场依靠遮挡与纵深完成，几乎不依赖透明度 — 行程中段实际可见两张</text>
 </svg>

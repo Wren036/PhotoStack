@@ -3,7 +3,7 @@
  * 微信式合并照片卡：堆叠 + 探边 + 跟手翻页 + 快甩
  *
  * Design spec reverse-engineered frame-by-frame from WeChat by Wren036.
- * 设计规格由 Wren036 逐帧考古自微信原版。
+ * 设计规格由 Wren036 基于对微信原版的逐帧观察测量得出。
  *
  * Zero dependencies. Pointer Events (touch + mouse unified).
  * License: PolyForm Noncommercial 1.0.0 — commercial use requires permission.
@@ -17,11 +17,11 @@
     peek: 15,          // 第一层探边露出量 first peek offset (px)
     peekStep: 12,      // 每深一层多探出 additional offset per depth (px)
     rotStep: 2.2,      // 每层递进旋转角 rotation per depth (deg)，旋转角随层深递增
-    scaleStep: 0.06,   // 每层递进缩小 scale-down per depth
+    scaleStep: 0.08,   // 每层递进缩小 scale-down per depth
     flingVel: 0.4,     // 快甩判定速度 fling velocity threshold (px/ms)
     counter: false,    // 右下角 n/N 角标（微信原版无此元素，故默认关闭）
     onTap: null,       // (index) => {} 点击当前卡
-    onChange: null     // (index) => {} 翻页落账
+    onChange: null     // (index) => {} 翻页结算
   };
 
   class PhotoStack {
@@ -63,7 +63,7 @@
       this.el.appendChild(this.stage);
     }
 
-    /* ── 可见探边配额：常态左右各1，贴边时向另一侧借（保持"三张的样子"）── */
+    /* ── 可见探边配额：常态左右各 1，位于边界时配额转移至另一侧（维持三层可见）── */
     _lr(cur) {
       const n = this.cards.length;
       const la = cur, ra = n - 1 - cur;
@@ -98,16 +98,16 @@
     _progress(dx, D) { return Math.min(1, Math.abs(dx) / Math.max(120, D || 240)); }
 
     /* ── 擦洗帧（核心运动模型：手指位置 = 翻页动画的进度条）──
-       前半程：当前卡跟手滑出到最远（峰值位移 ≈ 卡宽 × 0.52）
-       后半程：当前卡自己拐回来、缩小、落进对侧探边位（山峰轨迹）
-       全程由手指擦洗，天然可逆零死区 */
+       前半程：当前卡跟随手指滑出至峰值（峰值位移 ≈ 卡宽 × 0.52）
+       后半程：当前卡沿轨迹自行回归——缩小、微旋、落入对侧探边位
+       全程由手指擦洗，任意时刻可逆、无死区 */
     _scrub(dir, p) {
       const o = this.opt, cards = this.cards, cur = this.cur;
       const w = this.stage.offsetWidth || o.width;
       const maxX = w * 0.52;
       cards.forEach(c => { c.style.transition = 'none'; });
       this._apply();
-      // 边界预览：第一张能右滑最后一张能左滑，只是滑不远（探边两层轻微联动）
+      // 边界预览：首张可右滑、末张可左滑，行程受限于弹性区间（探边两层轻微联动位移）
       if ((dir < 0 && cur >= cards.length - 1) || (dir > 0 && cur <= 0)) {
         cards[cur].style.transform = `translateX(${dir * 24 * p}px) rotate(${dir * 2.5 * p}deg)`;
         cards[cur].style.zIndex = 110;
@@ -116,25 +116,36 @@
         if (n2) n2.style.transform = `translateX(${dir * (o.peek + o.peekStep + 5 * p)}px) rotate(${dir * o.rotStep * 2}deg) scale(${1 - o.scaleStep * 2})`;
         return;
       }
-      // 当前卡：山峰轨迹（出去→最远→拐回探边位）
+      // 当前卡：峰形轨迹（滑出→峰值→回落至对侧探边位）
       let cx, rot, sc;
       if (p <= 0.5) { const q = p / 0.5; cx = dir * maxX * q; rot = dir * 8 * q; sc = 1; }
       else { const q = (p - 0.5) / 0.5; cx = dir * (maxX - (maxX - o.peek) * q); rot = dir * (8 - (8 - o.rotStep) * q); sc = 1 - o.scaleStep * q; }
       cards[cur].style.transform = `translateX(${cx}px) rotate(${rot}deg) scale(${sc})`;
-      cards[cur].style.zIndex = p < 0.5 ? 110 : 102;   // 到最远的瞬间即沉
+      cards[cur].style.zIndex = p < 0.5 ? 110 : 102;   // 越过峰值的瞬间层级下沉
       // 新顶：从对侧探边位插值升顶
       const nt = cards[cur - dir];
       nt.style.transform = `translateX(${-dir * o.peek * (1 - p)}px) rotate(${-dir * o.rotStep * (1 - p)}deg) scale(${1 - o.scaleStep + o.scaleStep * p})`;
       nt.style.opacity = 1; nt.style.zIndex = 105;
-      // 三张守恒接力：新探边后 45% 进场、旧对侧探边前 55% 退完（0.1 重叠窗口，交接不空岗）
+      // 舞台转盘·进场：顶卡到达峰值前新探边不出场；后半程自升顶卡背后沿其边缘
+      // 滑出（可见部分为渐宽的窄边），透明度约 0.55→1、尺寸由小变大（近大远小）
+      const qq = Math.max(0, (p - 0.5) / 0.5);
       const nn = cards[cur - dir * 2];
       if (nn) {
-        nn.style.transform = `translateX(${-dir * (o.peek + o.peekStep - 12 * p)}px) rotate(${-dir * (o.rotStep * 2 - o.rotStep * p)}deg) scale(${1 - o.scaleStep * 2 + o.scaleStep * p})`;
-        nn.style.opacity = String(Math.max(parseFloat(nn.style.opacity) || 0, Math.max(0, (p - 0.45) / 0.55)));
+        const [Lb, Rb] = this._lr(cur);
+        if (dir < 0 ? 2 <= Rb : 2 <= Lb) {
+          // 边界借位：该卡本来就是可见的第二层探边——不参与进场编排，
+          // 与升顶卡同步全程走位（外层探边位 → 第一层探边位），保持实体
+          nn.style.transform = `translateX(${-dir * (o.peek + o.peekStep * (1 - p))}px) rotate(${-dir * (o.rotStep * 2 - o.rotStep * p)}deg) scale(${1 - o.scaleStep * 2 + o.scaleStep * p})`;
+          nn.style.opacity = '1';
+        } else {
+          const ntx = -dir * o.peek * (1 - p);
+          nn.style.transform = `translateX(${ntx * (1 - qq) + (-dir * o.peek) * qq}px) rotate(${-dir * (o.rotStep * 2 - o.rotStep * qq)}deg) scale(${1 - o.scaleStep * 2.5 + o.scaleStep * 1.5 * qq})`;
+          nn.style.opacity = String(Math.min(1, qq / 0.18) * 0.55 + 0.45 * qq);
+        }
         nn.style.zIndex = dir < 0 ? 98 : 38;
       }
-      // 边界例外：落账后仍在可见编制里的旧探边不退场（"侧边那张本来就在那"），
-      // 反而提前走位到降级后的外探边位等着（"侧边直接提前等着"）
+      // 边界例外：结算后仍属可见集合的旧探边不执行退场，而是在翻页过程中
+      // 提前插值走位至降级后的外层探边位——顶卡落位时其已就位
       const old2 = cards[cur + dir];
       if (old2) {
         const newCur = dir < 0 ? Math.min(cur + 1, cards.length - 1) : Math.max(cur - 1, 0);
@@ -142,17 +153,21 @@
         const oi = cur + dir;
         const stays = oi < newCur ? (newCur - oi) <= L2 : (oi - newCur) <= R2;
         if (!stays) {
-          old2.style.opacity = String(Math.max(0, 1 - p / 0.55));
+          // 舞台转盘·退场（进场的时间反演）：前半程保持静止维持三张可见，
+          // 后半程向回落顶卡的背后收拢——尺寸与透明度同步递减，顶卡落位时恰好将其遮蔽
+          const eq = 1 - (1 - qq) * (1 - qq);
+          old2.style.transform = `translateX(${dir * o.peek * (1 - eq) + cx * eq}px) rotate(${dir * o.rotStep}deg) scale(${1 - o.scaleStep - o.scaleStep * 1.5 * qq})`;
+          old2.style.opacity = String(1 - (Math.min(1, qq / 0.18) * 0.55 + 0.45 * qq));
         } else {
           old2.style.transform = `translateX(${dir * (o.peek + o.peekStep * p)}px) rotate(${dir * (o.rotStep + o.rotStep * p)}deg) scale(${1 - o.scaleStep - o.scaleStep * p})`;
         }
       }
     }
 
-    /* ── 完成动画：沿同一条山峰轨迹把剩余程播完（快甩也遵循轨迹到最远再回来）── */
+    /* ── 完成动画：沿同一条峰形轨迹播完剩余行程（快甩同样先至峰值再回落，不直接跳终态）── */
     _finish(dir, fromP) {
       if (this._anim) cancelAnimationFrame(this._anim);
-      this._animDir = dir;   // 未落账标记：动画被打断时先落账
+      this._animDir = dir;   // 未结算标记：动画被打断时先结算
       const dur = Math.max(140, (1 - fromP) * 340);
       const t0 = performance.now();
       const step = (now) => {
@@ -162,8 +177,10 @@
         this._anim = null; this._animDir = 0;
         const n = this.cards.length;
         this.cur = dir < 0 ? Math.min(this.cur + 1, n - 1) : Math.max(this.cur - 1, 0);
-        this.cards.forEach(c => { c.style.transition = ''; });
-        this._apply();   // 擦洗 p=1 态 == 落账态，零跳变
+        // 结算必须瞬时（transition 仍为 none 时 _apply），下一帧再恢复过渡——
+        // 顺序颠倒会使退场卡经由 CSS 过渡可见地滑出并渐隐
+        this._apply();   // 擦洗 p=1 态 == 结算态，零跳变
+        requestAnimationFrame(() => this.cards.forEach(c => { c.style.transition = ''; }));
         if (this.opt.onChange) this.opt.onChange(this.cur);
       };
       this._anim = requestAnimationFrame(step);
@@ -198,7 +215,7 @@
         if (!dragging && Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) dragging = true;
         if (dragging) {
           e.preventDefault();
-          if (this._anim) {   // 打断完成动画先落账，连甩不鬼畜
+          if (this._anim) {   // 打断进行中的完成动画先结算页码，保证连甩每次翻且仅翻一页
             cancelAnimationFrame(this._anim); this._anim = null;
             if (this._animDir) {
               const n = this.cards.length;
@@ -233,7 +250,7 @@
       i = Math.max(0, Math.min(this.cards.length - 1, i));
       if (i === this.cur) return;
       this._finish(i > this.cur ? -1 : 1, 0);
-      // 多步跳转直接落账（跨多页时逐页动画没有意义）
+      // 多步跳转直接结算（跨多页时逐页动画没有意义）
       if (Math.abs(i - this.cur) > 1) {
         cancelAnimationFrame(this._anim); this._anim = null; this._animDir = 0;
         this.cur = i;

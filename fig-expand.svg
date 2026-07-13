@@ -5,7 +5,7 @@
     </marker>
   </defs>
   <rect width="560" height="300" fill="#faf7f3"/>
-  <text x="280" y="28" text-anchor="middle" font-size="15" font-weight="600" fill="#4a4440">展开动画 — 同时出发，递增时长</text>
+  <text x="280" y="28" text-anchor="middle" font-size="15" font-weight="600" fill="#4a4440">展开动画 — 双时间轴：横向同步，纵向错落</text>
 
   <!-- 坐标轴 -->
   <line x1="80" y1="250" x2="520" y2="250" stroke="#c8beb6" stroke-width="1.5" marker-end="url(#arr3)"/>
@@ -15,9 +15,9 @@
 
   <!-- 刻度 -->
   <line x1="270" y1="250" x2="270" y2="254" stroke="#9a908a"/>
-  <text x="270" y="266" font-size="10.5" fill="#9a908a" text-anchor="middle">450</text>
+  <text x="270" y="266" font-size="10.5" fill="#9a908a" text-anchor="middle">280</text>
   <line x1="460" y1="250" x2="460" y2="254" stroke="#9a908a"/>
-  <text x="460" y="266" font-size="10.5" fill="#9a908a" text-anchor="middle">900</text>
+  <text x="460" y="266" font-size="10.5" fill="#9a908a" text-anchor="middle">505</text>
 
   <!-- 到位线 -->
   <line x1="80" y1="80" x2="520" y2="80" stroke="#e0d6cd" stroke-width="1" stroke-dasharray="5 4"/>
@@ -44,8 +44,8 @@
   <text x="94" y="246" font-size="11" fill="#8a6a58">所有卡片同一瞬间从堆内出发</text>
 
   <!-- 标注 -->
-  <text x="222" y="120" font-size="11" fill="#c06a7a" transform="rotate(-16 222 120)">第 1 张 450ms 先到</text>
-  <text x="400" y="153" font-size="11" fill="#8a6ab0" transform="rotate(-18 400 153)">第 6 张 900ms 殿后</text>
+  <text x="222" y="120" font-size="11" fill="#c06a7a" transform="rotate(-16 222 120)">第 1 张 280ms 先到</text>
+  <text x="400" y="153" font-size="11" fill="#8a6ab0" transform="rotate(-18 400 153)">第 6 张 505ms 殿后</text>
 
-  <text x="280" y="290" text-anchor="middle" font-size="11.5" fill="#9a908a">任意时刻每张卡片均在运动（无静止帧）；后卡受前卡遮挡，视觉上依次显出</text>
+  <text x="280" y="290" text-anchor="middle" font-size="11.5" fill="#9a908a">横向（位移/缩放/旋转）共用约 280ms 时长曲线，边缘保持对齐；纵向各卡独立时长，按序号依次落位</text>
 </svg>
