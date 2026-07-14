@@ -23,7 +23,7 @@
   <line x1="80" y1="80" x2="520" y2="80" stroke="#e0d6cd" stroke-width="1" stroke-dasharray="5 4"/>
   <text x="86" y="74" font-size="10.5" fill="#b0a69e">落位（各自的消息行）</text>
 
-  <!-- 六条easeOut曲线：同起点，时长 450+i*90 -->
+  <!-- 六条easeOut曲线：同起点，时长 280+i*45 -->
   <path d="M 80 250 Q 140 105 270 80" fill="none" stroke="#f5b8c0" stroke-width="2.5"/>
   <path d="M 80 250 Q 155 110 308 80" fill="none" stroke="#a8d8c8" stroke-width="2.5"/>
   <path d="M 80 250 Q 170 115 346 80" fill="none" stroke="#a5d3ea" stroke-width="2.5"/>
