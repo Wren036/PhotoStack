@@ -190,7 +190,7 @@
       const dir = dx < 0 ? -1 : 1;
       const p = this._progress(dx, D);
       const can = dir < 0 ? this.cur < this.cards.length - 1 : this.cur > 0;
-      // 两条翻页判定：①慢拖过半 ②快甩（速度过阈值，位移再小也翻）
+      // 两条翻页判定：①慢拖过半 ②快甩（速度过阈值，位移有 p>0.04 即约 10px 防误触下限）
       const fling = Math.abs(vel || 0) > this.opt.flingVel && Math.sign(vel || 0) === Math.sign(dx) && p > 0.04;
       if (can && (p > 0.5 || fling)) { this._finish(dir, p); return; }
       this.cards.forEach(c => { c.style.transition = ''; });

@@ -11,12 +11,14 @@
     font-family: -apple-system, system-ui, sans-serif;
     background: #f5f2ee; color: #4a4440;
     display: flex; flex-direction: column; align-items: center; gap: 12px;
+    height: 100dvh; overflow: hidden; box-sizing: border-box;
+    position: fixed; inset: 0;   /* 单屏演示页锁死滚动，翻卡不被上下滑干扰 */
   }
   h1 { font-size: 20px; margin: 0; }
   p.sub { font-size: 13px; color: #9a908a; margin: 0 0 12px; text-align: center; line-height: 1.6; }
   .demo-block { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 18px; }
   .demo-label { font-size: 12px; color: #b0a69e; }
-  .hint { font-size: 12px; color: #b0a69e; margin-top: 26px; text-align: center; line-height: 1.8; }
+  .hint { font-size: 12px; color: #b0a69e; margin-top: 26px; text-align: left; line-height: 1.8; }
   .stat { font-size: 12px; color: #9a908a; }
 </style>
 </head>
@@ -30,14 +32,9 @@
     <div class="stat" id="stat1">1/6</div>
   </div>
 
-  <div class="demo-block">
-    <div class="demo-label">两张（边界弹性预览：首张可右滑、末张可左滑，行程受限）</div>
-    <div id="demo2"></div>
-  </div>
-
   <div class="hint">
     拖动翻页：手指即动画进度条，任意时刻可逆<br>
-    快甩：速度超过阈值时，位移再小也翻页<br>
+    快甩：释放速度超过阈值即翻页<br>
     连甩：动画中断先结算页码，每次甩动翻且仅翻一页
   </div>
 
@@ -86,7 +83,6 @@
     onChange: (i) => document.getElementById('stat1').textContent = (i + 1) + '/6'
   });
 
-  new PhotoStack('#demo2', imgs.slice(0, 2), { onTap: (i) => openViewer(imgs.slice(0, 2), i) });
 </script>
 </body>
 </html>
