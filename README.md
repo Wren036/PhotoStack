@@ -133,4 +133,4 @@ ps.destroy()    // 销毁
 
 ## 许可
 
-[PolyForm Noncommercial 1.0.0](LICENSE.md) — 个人学习、研究与非商业用途免费；**商业使用需事先取得作者书面授权**。
+[PolyForm Noncommercial 1.0.0](LICENSE.md) — 个人学习、研究与非商业用途免费；**商业使用需事先取得作者书面授权**。使用或参考本项目时请注明来源并附本仓库链接。

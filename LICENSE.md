@@ -2,6 +2,8 @@
 
 <https://polyformproject.org/licenses/noncommercial/1.0.0>
 
+Required Notice: PhotoStack by Wren036 (https://github.com/Wren036/PhotoStack)
+
 ## Acceptance
 
 In order to get any license under these terms, you must agree to them as both strict obligations and conditions to all your licenses.
